@@ -29,11 +29,6 @@ class Cinema{
         return $conn->query($sql);
 
     }
-    public function findAllCinema(){
-        global $conn;
-        $sql="Select * from Cinemas ";
-        return $conn->query($sql);
-    }
-    
+   
 }
 ?>
