@@ -14,6 +14,7 @@ switch ($method) {
 
         $data = json_decode(file_get_contents("php://input"), true);
 
+
         if (
             !isset($data["theater_name"]) ||
             !isset($data["total_seats"]) ||
@@ -25,6 +26,15 @@ switch ($method) {
                 "message" => "Thiếu dữ liệu"
             ]);
             exit;
+        }
+        $check=$room->check($cinema_id,$name);
+        if($check->num_rows<0){
+            echo json_encode([
+                "status"=>false,
+                "message"=>"Phòng đã tồn tại trên hệ thống!"
+            ]);
+            exit;
+
         }
 
         $name = $data["theater_name"];
@@ -62,6 +72,8 @@ switch ($method) {
     case "GET":
        $id=$_GET['id'] ?? null;
        if($id){
+        $result=$room->find($id);
+        echo json_encode($result);
 
        }
        else{

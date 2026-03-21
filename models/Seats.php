@@ -44,5 +44,11 @@ class Seats {
 
 
     }
+    public function findAll($id){
+        global $conn;
+        return $conn->query("SELECT * FROM seats WHERE theater_id= '$id'");
+
+    }
+
 }
 ?>

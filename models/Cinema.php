@@ -29,6 +29,12 @@ class Cinema{
         return $conn->query($sql);
 
     }
+    public function check($name){
+        global $conn;
+        $sql="SELECT 1 FROM Cinema WHERE name='$name'";
+        return $conn->query($sql);
+
+    }
    
 }
 ?>
