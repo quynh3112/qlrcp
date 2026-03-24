@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Quản lý phòng </title>
+        <meta charset="UTF-8"/>
+        
+    </head>
+    <body>
+        <div>
+            <h1>Quản lý chi nhánh</h1>
+            <button onclick="openDialog()">Thêm</button>
+            <dialog id="myDialog">
+                <h3>Thêm Chi Nhánh</h3>
+                <input type="text" placeholder="Tên..." id="name">
+                <input type="text" placeholder="Địa chỉ" id="location"/>
+                <br>
+                <button onclick="submitData()">Thêm</button>
+                <button onclick="closeDialog()">Đóng</button>
+            </dialog>
+
+
+        </div>
+        <div>
+            <table>
+                <thead>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Địa Chỉ</th>
+                    <th>Thao Tác</th>
+                    
+                </thead>
+                <tbody id="cinemaTable">
+
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/cinema.js">
+          
+        </script>
+        
+    </body>
+</html>

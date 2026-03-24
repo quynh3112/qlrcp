@@ -20,5 +20,12 @@ class User{
         $sql="DELETE FROM Users WHERE user_id= '$id' ";
         return $conn->query($sql);
     }
+    public function check($id){
+        global $conn;
+        $sql="SELECT 1 From User WHERE user_id='$id'";
+        return $conn->query($sql);
+
+    }
 }
+
 ?>

@@ -60,6 +60,7 @@ class Room {
         return $conn->query("SELECT * FROM Rooms");
 
     }
+    
 
 }
 ?>
