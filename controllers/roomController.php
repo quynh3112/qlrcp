@@ -27,6 +27,10 @@ switch ($method) {
             ]);
             exit;
         }
+         $name = $data["theater_name"];
+        $total_seats = $data["total_seats"];
+        $cinema_id = $data["cinema_id"];
+        $type = $data["type"];
         $check=$room->check($cinema_id,$name);
         if($check->num_rows<0){
             echo json_encode([
@@ -37,10 +41,7 @@ switch ($method) {
 
         }
 
-        $name = $data["theater_name"];
-        $total_seats = $data["total_seats"];
-        $cinema_id = $data["cinema_id"];
-        $type = $data["type"];
+       
 
         $result = $room->create($name, $total_seats, $cinema_id, $type);
 
@@ -80,7 +81,7 @@ switch ($method) {
         $result=$room->findAll();
         $list=[];
         while($row=$result->fetch_assoc()){
-            $list=$row;
+            $list[]=$row;
 
         }
         echo json_encode($list);

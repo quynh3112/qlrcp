@@ -43,5 +43,18 @@ switch ($method){
             "status"=>$result,
             "message"=>$result ? "Thành Công!" : "Thất Bại!"
         ]);
+        break;
+    case "GET":
+        $user_id=$_GET["user_id"];
+        $result=$work_schedule->findByUserId($user_id);
+        $data=[];
+        if($result->num_rows>0){
+            while ($row=$result->fetch_assoc()){
+                $data[]=$row;
+            }
+        }
+        echo json_encode($data);
+        break;
+        
 }
 ?>

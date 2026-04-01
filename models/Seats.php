@@ -49,6 +49,12 @@ class Seats {
         return $conn->query("SELECT * FROM seats WHERE theater_id= '$id'");
 
     }
+    public function findSeat($id,$showtime_id){
+        global $conn;
+        $sql="SELECT * from seats s join showtimes st on s.theater_id=st.theater_id WHERE
+        ";
+
+    }
 
 }
 ?>

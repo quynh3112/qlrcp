@@ -24,7 +24,7 @@ switch ($method) {
 
         $check = $room->find($id); 
 
-        if (!$check) {
+        if ($check->num_rows==0) {
             echo json_encode([
                 "status" => false,
                 "message" => "Phòng không tồn tại!"
@@ -33,8 +33,13 @@ switch ($method) {
         }
 
         $result = $seats->findAll($id);
+        $list=[];
+        while($row=$result->fetch_assoc()){
+            $list[]=$row;
 
-        echo json_encode($result);
+        }
+        echo json_encode($list);
+
 
         break;
 }
