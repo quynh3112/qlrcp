@@ -52,14 +52,26 @@ class Room {
 }
     public function find($id){
         global $conn;
-        $sql="SELECT * From Rooms Where theater_id='$id'";
+        $sql="SELECT * From Rooms Where cinema_id='$id'";
         return $conn->query($sql);
     }
+    
     public function findAll(){
         global $conn;
         return $conn->query("SELECT * FROM Rooms");
 
     }
+    public function findById($id){
+        global $conn;
+        $sql="SELECT * From Rooms Where theater_id='$id'";
+        return $conn->query($sql);
+    }
+    public function edit($id,$cinema_id,$name,$total_seats,$type){
+        global $conn;
+        $sql="UPDATE Rooms SET cinema_id='$cinema_id', theater_name='$name', total_seats='$total_seats', type='$type' WHERE theater_id='$id'";
+        return $conn->query($sql);
+    }
+    
     
 
 }

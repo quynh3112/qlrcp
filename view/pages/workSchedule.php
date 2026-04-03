@@ -4,16 +4,18 @@
   <meta charset="UTF-8">
   <title>Lịch làm việc</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/menu.css"/>
+
 </head>
 <body class="bg-gray-900 text-white">
-
+<?php include "../component/header.php";?>
 <div class="container mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6 text-center">Lịch Làm Việc (Tuần)</h1>
 
-  <!-- Nút chuyển tuần -->
   <div class="flex justify-between mb-4">
-    <button onclick="prevWeek()" class="bg-gray-700 px-4 py-2 rounded-xl">⬅ Tuần trước</button>
-    <button onclick="nextWeek()" class="bg-gray-700 px-4 py-2 rounded-xl">Tuần sau ➡</button>
+    <button onclick="prevWeek()" class="bg-gray-700 px-4 py-2 rounded-xl"><i class="fa-solid fa-angle-left"></i></button>
+    <button onclick="nextWeek()" class="bg-gray-700 px-4 py-2 rounded-xl"><i class="fa-solid fa-angle-right"></i></button>
   </div>
 
   <!-- Thanh tuần -->

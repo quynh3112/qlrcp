@@ -1,7 +1,7 @@
 let selectedSeats = [];
 let total = 0;
 
-const theater_id = 6; 
+const theater_id = 5; 
 
 
 function loadSeats(){

@@ -22,7 +22,7 @@ switch ($method) {
             exit;
         }
 
-        $check = $room->find($id); 
+        $check = $room->findById($id); 
 
         if ($check->num_rows==0) {
             echo json_encode([

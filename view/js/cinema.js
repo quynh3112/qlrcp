@@ -1,3 +1,4 @@
+let currentId = null;
 function submitData() {
     const nameinput = document.getElementById('name').value;
     const location = document.getElementById('location').value;
@@ -8,7 +9,6 @@ function submitData() {
         location: location
     };
 
-    // 🔥 nếu đang sửa thì dùng PUT
     if (currentId !== null) {
         method = "PUT";
         bodyData.id = currentId;
@@ -25,7 +25,7 @@ function submitData() {
     .then(data => {
         alert(data.message);
 
-        currentId = null; // reset
+        currentId = null; 
 
         closeDialog();
         loadData();

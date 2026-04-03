@@ -1,4 +1,5 @@
 let currentId = null; 
+let selectedbranch=1;
 
 function openDialog() {
     document.getElementById('myDialog').showModal();
@@ -43,6 +44,7 @@ function submitData() {
     if (currentId !== null) {
         method = "PUT";
         bodyData.theater_id = currentId;
+
     }
 
     fetch("http://qlrcp.test/controllers/roomController.php", {
@@ -76,36 +78,38 @@ function deleteRoom(id) {
         .catch(err => console.log(err));
 }
 
-function openEdit(id, name, total_seat, type) {
+function openEdit(id,cinema, name, total_seat, type) {
     currentId = id;
+    document.getElementById("branch").value = cinema;
     document.getElementById("name").value = name;
     document.getElementById("total").value = total_seat;
     document.getElementById("type").value = type;
     document.getElementById("myDialog").showModal();
 }
 
-function loadData() {
+function loadData(id) {
     const tbody = document.getElementById('tableBody');
-    fetch("http://qlrcp.test/controllers/roomController.php")
+    fetch(`http://qlrcp.test/controllers/roomController.php?cinema_id=${id}`)
         .then(res => res.json())
         .then(data => {
+            console.log(data); 
             tbody.innerHTML = "";
             const list = Array.isArray(data) ? data : [data];
 
             list.forEach(item => {
-                // escape dấu nháy trong tên phòng để không phá template literal
+                
                 const safeName = item.theater_name.replace(/'/g, "\\'");
                 const safeType = item.type.replace(/'/g, "\\'");
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.theater_id}</td>
-                    <td>${safeName}</td>
+                    <td >${item.theater_id}</td>
+                    <td >${safeName}</td>
                     <td>${item.total_seats}</td>
                     <td>${safeType}</td>
-                    <td>
-                        <button onclick="openEdit(${item.theater_id}, '${safeName}', '${item.total_seats}', '${safeType}')">Sửa</button>
-                        <button onclick="deleteRoom(${item.theater_id})">Xóa</button>
+                    <td >
+                        <button  onclick="openEdit(${item.theater_id}, '${item.cinema_id}', '${safeName}', '${item.total_seats}', '${safeType}')">Sửa</button>
+                        <button  onclick="deleteRoom(${item.theater_id})">Xóa</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -113,7 +117,40 @@ function loadData() {
         })
         .catch(err => console.error(err));
 }
+function loadRoombyID(){
+    const select = document.getElementById("branch");
+    select.innerHTML = `<option value="">-- Chọn chi nhánh --</option>`; 
+
+    fetch("http://qlrcp.test/controllers/cinemaController.php")
+        .then(res => res.json())
+        .then(data => {
+           alert(data.message);
+
+            const list = Array.isArray(data) ? data : (data.data || []);
+
+            list.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.cinema_id;
+                option.textContent = item.name;
+                select.appendChild(option);
+            });
+
+            select.onchange = function () {
+                const selectedbranch = this.value;
+                console.log("Đã chọn:", selectedbranch);
+
+                if(selectedbranch){
+                    loadData(selectedbranch);
+                }
+            };
+        })
+        .catch(err => console.log("Lỗi:", err));
+}
 
 window.onload = function () {
-    loadData();
+  
+    loadRoombyID();
+    
+   
+   
 };

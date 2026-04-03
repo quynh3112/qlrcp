@@ -32,7 +32,7 @@ switch ($method) {
         $cinema_id = $data["cinema_id"];
         $type = $data["type"];
         $check=$room->check($cinema_id,$name);
-        if($check->num_rows<0){
+        if($check->num_rows>0){
             echo json_encode([
                 "status"=>false,
                 "message"=>"Phòng đã tồn tại trên hệ thống!"
@@ -71,10 +71,23 @@ switch ($method) {
         json_encode($result);
         break;
     case "GET":
-       $id=$_GET['id'] ?? null;
+       $id=$_GET['cinema_id'] ?? null;
        if($id){
         $result=$room->find($id);
-        echo json_encode($result);
+        if($result->num_rows==0){
+            echo json_encode([
+                "status"=>false,
+                "message"=>"Chưa có phòng nào thuộc rạp này"
+            ]);
+           exit;
+        }
+        $list=[];
+        while($row=$result->fetch_assoc()){
+            $list[]=$row;
+
+        }
+        echo json_encode($list);
+       
 
        }
        else{
@@ -86,6 +99,54 @@ switch ($method) {
         }
         echo json_encode($list);
        }
+        break;
+
+    case "PUT":
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if(!$data){
+        echo json_encode([
+            "status"=>false,
+            "message"=>"Dữ liệu không hợp lệ"
+        ]);
+        exit;
+    }
+
+    $id = $data['theater_id'];
+    $cinema_id = $data['cinema_id'];
+    $name = $data['theater_name'];
+    $total_seats = $data['total_seats'];
+    $type = $data['type'];
+
+    if(
+        !isset($id) || 
+        !isset($cinema_id) || 
+        !isset($name) || 
+        !isset($total_seats) || 
+        !isset($type)
+    ){
+        echo json_encode([
+            "status"=>false,
+            "message"=>"Thiếu dữ liệu"
+        ]);
+        exit;
+    }
+
+    $check = $room->findById($id);
+    if(!$check){
+        echo json_encode([
+            "status"=>false,
+            "message"=>"Phòng không tồn tại"
+        ]);
+        exit;
+    }
+
+    $result = $room->edit($id,$cinema_id,$name,$total_seats,$type);
+
+    echo json_encode([
+        "status"=>$result,
+        "message"=>$result?"Sửa phòng thành công":"Lỗi sửa phòng"
+    ]);
 
 }
 ?>
