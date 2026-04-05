@@ -1,0 +1,91 @@
+body {
+    background-color: #0D1424;
+    font-family: 'Times New Roman', Times, serif;
+    color: white;
+}
+h1{
+    text-align: center;
+    margin-top: 70px;
+}
+.add{
+    background-color: #3B82F6;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-family: 'Times New Roman', Times, serif;
+    display: block;
+    margin-left: auto;
+    margin-right: 20px;
+
+    
+}
+.content{
+    background-color: #0D1424;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    gap: 5px;
+    
+
+}
+#myDialog{
+    background-color: #0D1424;
+    border-radius: 10px;
+    width: 50%;
+    box-shadow: 1px 4px 8px aqua;
+}
+.content select, input{
+
+    margin: 10px;
+    padding: 5px;
+    background-color: #0D1424;
+    color: white;
+    border: solid white;
+}
+.content button{
+    color: white;
+    background-color: #3B82F6;
+    border: none;
+    border-radius: 3px;
+    font-style: bold;
+    font-size: 16px;
+    padding: 6px;
+    font-family: 'Times New Roman', Times, serif;
+
+}
+.content button:hover{
+    background-color: #2563EB;
+    cursor: pointer;
+}
+table{
+    border-collapse: collapse;
+    width: 70%;
+   
+   margin: auto;
+}
+table thead{
+    background-color: #3B82F6;
+
+}
+td,th{
+    border: 1px solid white;
+    padding: 8px;
+    text-align: left;
+}
+table button{
+    background-color: #3B82F6;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-family: 'Times New Roman', Times, serif;
+}
+table button:hover{
+    background-color: #2563EB;
+    cursor: pointer;
+}
