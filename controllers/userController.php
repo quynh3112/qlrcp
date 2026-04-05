@@ -59,5 +59,6 @@ switch ($method) {
             "status" => false,
             "message" => "Method không hợp lệ"
         ]);
+        
 }
 ?>

@@ -15,6 +15,16 @@ switch($method){
             ]);
             exit;
         }
+        $check=$cinema->check($name);
+        if($check->num_rows>0){
+            echo json_encode([
+                "status"=>false,
+                "message"=>"Tên chi nhánh này đã tồn tại!"
+                
+            ]);
+            exit;
+
+        }
         $result=$cinema->create($name,$location);
         echo json_encode([
             "status"=>$result,
@@ -60,6 +70,7 @@ switch($method){
             exit;
 
         }
+       
          $found=$cinema->find($id);
         if($found->num_rows<=0){
             echo json_encode([
@@ -69,6 +80,15 @@ switch($method){
             exit;
 
         }
+         $check=$cinema->check($name);
+        if($check->num_rows>0){
+            echo json_encode([
+                "status"=>false,
+                "message"=>"Tên chi nhánh này đã tồn tại!"
+            ]);
+            exit;
+        }
+
         $result=$cinema->edit($id,$name,$location);
         echo json_encode([
             "status"=>$result,
@@ -103,9 +123,6 @@ switch($method){
     }
     break;
 
-
-
-    
 
 }
 

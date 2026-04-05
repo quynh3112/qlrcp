@@ -10,7 +10,7 @@ class Cinema{
     public function delete($id){
         global $conn;
         $sql="DELETE FROM Cinemas WHERE cinema_id= '$id'";
-        return $sql->query($sql);
+        return $conn->query($sql);
     }
     public function edit($id,$name,$location){
         global $conn;
@@ -29,11 +29,12 @@ class Cinema{
         return $conn->query($sql);
 
     }
-    public function findAllCinema(){
+    public function check($name){
         global $conn;
-        $sql="Select * from Cinemas ";
+        $sql="SELECT 1 FROM Cinemas WHERE name='$name'";
         return $conn->query($sql);
+
     }
-    
+   
 }
 ?>
