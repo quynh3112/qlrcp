@@ -1,0 +1,107 @@
+/* --- TỔNG QUAN TRANG ĐỒ ĂN --- */
+.container {
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+
+/* --- TIÊU ĐỀ TRANG --- */
+.tieude-food {
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-left: 8px solid #e74c3c; /* Màu đỏ rạp phim */
+    padding-left: 15px;
+    margin-bottom: 30px;
+}
+
+/* --- ĐỊNH DẠNG CÁI BẢNG MENU --- */
+.table-bordered {
+    border: 1px solid #dee2e6;
+    background-color: #ffffff;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.table th {
+    text-align: center;
+    vertical-align: middle;
+    color: #495057;
+    font-size: 15px;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 12px;
+}
+
+/* Nút thêm món - Hiệu ứng rê chuột */
+.btn-outline-primary {
+    border-radius: 20px; /* Làm nút bo tròn nhìn cho hiện đại */
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    transform: scale(1.05); /* Rê chuột vào nút hơi to ra tí */
+}
+
+/* --- KHUNG ĐƠN HÀNG (GIỎ HÀNG) --- */
+.khung-don-hang {
+    border: 1px solid #ffc107; /* Viền vàng cho nổi bật */
+    border-radius: 12px;
+    background-color: #ffffff;
+    position: sticky;
+    top: 20px;
+    transition: box-shadow 0.3s;
+}
+
+.khung-don-hang:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+.khung-don-hang h5 {
+    font-weight: 700;
+    color: #d35400;
+    border-bottom: 2px dashed #f39c12;
+    padding-bottom: 10px;
+}
+
+/* Hiển thị món trong giỏ hàng */
+#gio-hang-tam p {
+    font-size: 14px;
+    color: #34495e;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Tổng tiền */
+#tong-tien {
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+/* Nút xác nhận đặt hàng */
+.btn-primary.w-100 {
+    background-color: #e67e22;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary.w-100:hover {
+    background-color: #d35400;
+}
+
+/* Thông báo đặt thành công */
+#thong-bao {
+    padding: 10px;
+    border-radius: 5px;
+    font-style: italic;
+}
