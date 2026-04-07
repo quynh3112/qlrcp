@@ -1,68 +1,28 @@
 <?php
-require_once "../models/Theater.php";
-
-class TheaterController {
-    private $theater;
-
-    public function __construct($db){
-        $this->theater = new Theater($db);
-    }
-
-    // GET ALL
-    public function getAll(){
-        $result = $this->theater->getAll();
-        $data = [];
-
-        while($row = $result->fetch_assoc()){
-            $data[] = $row;
+header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type");
+require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../controllers/theaters.php";
+$controller = new TheaterController($conn);
+$method = $_SERVER['REQUEST_METHOD'];
+switch($method){
+    case "GET":
+        if(isset($_GET['id'])){
+            $controller->getById($_GET['id']);
+        } else {
+            $controller->getAll();
         }
-
-        echo json_encode([
-            "status" => true,
-            "data" => $data
-        ]);
-    }
-
-    // GET BY ID
-    public function getById($id){
-        $result = $this->theater->getById($id);
-        echo json_encode($result->fetch_assoc());
-    }
-
-    // CREATE
-    public function create(){
-        $data = json_decode(file_get_contents("php://input"), true);
-
-        $result = $this->theater->create($data);
-
-        echo json_encode([
-            "status" => $result,
-            "message" => $result ? "Thêm phòng thành công" : "Thất bại"
-        ]);
-    }
-
-    // UPDATE
-    public function update(){
-        $data = json_decode(file_get_contents("php://input"), true);
-
-        $result = $this->theater->update($data);
-
-        echo json_encode([
-            "status" => $result,
-            "message" => $result ? "Cập nhật thành công" : "Thất bại"
-        ]);
-    }
-
-    // DELETE
-    public function delete(){
-        $data = json_decode(file_get_contents("php://input"), true);
-
-        $result = $this->theater->delete($data['theater_id']);
-
-        echo json_encode([
-            "status" => $result,
-            "message" => $result ? "Xóa thành công" : "Thất bại"
-        ]);
-    }
+        break;
+    case "POST":
+        $controller->create();
+        break;
+    case "PUT":
+        $controller->update();
+        break;
+    case "DELETE":
+        $controller->delete();
+        break;
 }
 ?>

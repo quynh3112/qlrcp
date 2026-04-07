@@ -1,99 +1,93 @@
 <?php
 header("Content-Type: application/json");
 include "../config/db.php";
-
+include "../models/movies.php";
+$movie = new Movie($conn);
 $method = $_SERVER['REQUEST_METHOD'];
-
 switch($method){
-
-    // LẤY DANH SÁCH PHIM
     case "GET":
-        $sql = "SELECT * FROM movies";
-        $result = $conn->query($sql);
-
+        $result = $movie->getAll();
         $movies = [];
         while($row = $result->fetch_assoc()){
             $movies[] = $row;
         }
-
         echo json_encode([
             "status" => true,
             "data" => $movies
         ]);
         break;
-
-    //THÊM PHIM
     case "POST":
         $data = json_decode(file_get_contents("php://input"), true);
-
-        $stmt = $conn->prepare("INSERT INTO movies(title, genre, duration, release_date, director, language, rating, description, poster_url, trailer_url)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-        $stmt->bind_param(
-            "ssisssdsss",
-            $data['title'],
-            $data['genre'],
-            $data['duration'],
-            $data['release_date'],
-            $data['director'],
-            $data['language'],
-            $data['rating'],
-            $data['description'],
-            $data['poster_url'],
-            $data['trailer_url']
-        );
-
-        $result = $stmt->execute();
-
+        if (!$data) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Dữ liệu không hợp lệ!"
+            ]);
+            exit;
+        }
+        if (empty($data['title'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Tên phim không được để trống!"
+            ]);
+            exit;
+        }
+        if (!isset($data['duration']) || !is_numeric($data['duration']) || $data['duration'] <= 0) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Thời lượng phải là số > 0!"
+            ]);
+            exit;
+        }
+        $result = $movie->create($data);
         echo json_encode([
             "status" => $result,
-            "message" => $result ? "Thêm phim thành công" : "Thêm thất bại"
+            "message" => $result ? "Thêm phim thành công 🎉" : "Lỗi database ❌"
         ]);
         break;
-
-    //PUT - CẬP NHẬT PHIM
     case "PUT":
         $data = json_decode(file_get_contents("php://input"), true);
-
-        $stmt = $conn->prepare("UPDATE movies SET
-            title=?, genre=?, duration=?, release_date=?, director=?, language=?, rating=?, description=?, poster_url=?, trailer_url=?
-            WHERE movie_id=?");
-
-        $stmt->bind_param(
-            "ssisssdsssi",
-            $data['title'],
-            $data['genre'],
-            $data['duration'],
-            $data['release_date'],
-            $data['director'],
-            $data['language'],
-            $data['rating'],
-            $data['description'],
-            $data['poster_url'],
-            $data['trailer_url'],
-            $data['movie_id']
-        );
-
-        $result = $stmt->execute();
-
+        if (!$data) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Dữ liệu không hợp lệ!"
+            ]);
+            exit;
+        }
+        if (empty($data['title'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Tên phim không được để trống!"
+            ]);
+            exit;
+        }
+        if (!isset($data['movie_id'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Thiếu ID phim!"
+            ]);
+            exit;
+        }
+        $result = $movie->update($data);
         echo json_encode([
             "status" => $result,
-            "message" => $result ? "Cập nhật thành công" : "Cập nhật thất bại"
+            "message" => $result ? "Cập nhật thành công " : "Cập nhật thất bại ❌"
         ]);
         break;
-
-    //DELETE - XOÁ PHIM
     case "DELETE":
         $data = json_decode(file_get_contents("php://input"), true);
 
-        $stmt = $conn->prepare("DELETE FROM movies WHERE movie_id=?");
-        $stmt->bind_param("i", $data['movie_id']);
-
-        $result = $stmt->execute();
-
+        if (!isset($data['movie_id'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Thiếu ID để xóa!"
+            ]);
+            exit;
+        }
+        $result = $movie->delete($data['movie_id']);
         echo json_encode([
             "status" => $result,
-            "message" => $result ? "Xóa thành công" : "Xóa thất bại"
+            "message" => $result ? "Xóa thành công " : "Xóa thất bại "
         ]);
         break;
 }

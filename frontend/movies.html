@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quản lý phim</title>
+
+<style>
+body { font-family: Arial; padding: 20px; }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background: #f4f4f4;
+}
+
+button {
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+}
+
+input {
+    padding: 6px;
+    margin: 5px;
+}
+
+#editModal {
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.5);
+}
+
+.modal-box {
+    background:#fff;
+    width:400px;
+    margin:100px auto;
+    padding:20px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎬 Quản lý phim</h1>
+
+<input type="text" id="search" placeholder="🔍 Tìm tên phim..." onkeyup="searchMovie()">
+
+<h3>Thêm phim</h3>
+<input type="text" id="title" placeholder="Tên phim">
+<input type="text" id="genre" placeholder="Thể loại">
+<input type="number" id="duration" placeholder="Thời lượng">
+<button onclick="addMovie()">Thêm</button>
+
+<hr>
+
+<table>
+<thead>
+<tr>
+    <th>ID</th>
+    <th>Tên phim</th>
+    <th>Thể loại</th>
+    <th>Thời lượng</th>
+    <th>Hành động</th>
+</tr>
+</thead>
+<tbody id="movieTable"></tbody>
+</table>
+<div id="editModal">
+    <div class="modal-box">
+        <h3>✏️ Sửa phim</h3>
+
+        <input type="hidden" id="edit_id">
+
+        <input type="text" id="edit_title" placeholder="Tên phim"><br>
+        <input type="text" id="edit_genre" placeholder="Thể loại"><br>
+        <input type="number" id="edit_duration" placeholder="Thời lượng"><br><br>
+
+        <button onclick="updateMovie()">💾 Lưu</button>
+        <button onclick="closeModal()">❌ Hủy</button>
+    </div>
+</div>
+
+<script>
+const API_URL = "http://localhost:8080/qlrcp/controllers/movies.php";
+let allMovies = [];
+function loadMovies() {
+    fetch(API_URL)
+        .then(res => res.json())
+        .then(result => {
+            allMovies = result.data;
+            renderMovies(allMovies);
+        });
+}
+function renderMovies(movies) {
+    let html = "";
+
+    movies.forEach(movie => {
+        html += `
+        <tr>
+            <td>${movie.movie_id}</td>
+            <td>${movie.title}</td>
+            <td>${movie.genre}</td>
+            <td>${movie.duration}</td>
+            <td>
+                <button onclick='openEditModal(${JSON.stringify(movie)})'>Sửa</button>
+                <button onclick="deleteMovie(${movie.movie_id})">Xóa</button>
+            </td>
+        </tr>
+        `;
+    });
+
+    document.getElementById("movieTable").innerHTML = html;
+}
+function searchMovie() {
+    const keyword = document.getElementById("search").value.toLowerCase();
+
+    const filtered = allMovies.filter(movie =>
+        movie.title.toLowerCase().includes(keyword) 
+    );
+
+    renderMovies(filtered);
+}
+function addMovie() {
+    const title = document.getElementById("title").value;
+    const genre = document.getElementById("genre").value;
+    const duration = document.getElementById("duration").value;
+
+    fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            title,
+            genre,
+            duration,
+            release_date: "",
+            director: "",
+            language: "",
+            rating: 0,
+            description: "",
+            poster_url: "",
+            trailer_url: ""
+        })
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert(res.message);
+        loadMovies();
+    });
+}
+function deleteMovie(id) {
+    if (!confirm("Xóa phim này?")) return;
+
+    fetch(API_URL, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ movie_id: id })
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert(res.message);
+        loadMovies();
+    });
+}
+function openEditModal(movie) {
+    document.getElementById("editModal").style.display = "block";
+
+    document.getElementById("edit_id").value = movie.movie_id;
+    document.getElementById("edit_title").value = movie.title;
+    document.getElementById("edit_genre").value = movie.genre;
+    document.getElementById("edit_duration").value = movie.duration;
+}
+function closeModal() {
+    document.getElementById("editModal").style.display = "none";
+}
+function updateMovie() {
+    const id = document.getElementById("edit_id").value;
+    const title = document.getElementById("edit_title").value;
+    const genre = document.getElementById("edit_genre").value;
+    const duration = document.getElementById("edit_duration").value;
+
+    fetch(API_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            movie_id: id,
+            title,
+            genre,
+            duration: parseInt(duration),
+            release_date: "",
+            director: "",
+            language: "",
+            rating: 0,
+            description: "",
+            poster_url: "",
+            trailer_url: ""
+        })
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert(res.message);
+        closeModal();
+        loadMovies();
+    });
+}
+
+// RUN
+loadMovies();
+</script>
+
+</body>
+</html>
