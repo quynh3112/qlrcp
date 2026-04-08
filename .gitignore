@@ -1,0 +1,16 @@
+# Editor
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PHP logs
+*.log
+error_log
+
+# Không commit config DB thật (nếu cần)
+# config/db.php
