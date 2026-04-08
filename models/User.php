@@ -14,18 +14,32 @@ class User{
             VALUES ('$username', '$hash', '$email', '$phone', '$role')";
 
     return $conn->query($sql);
-}
+    }
+
     public function delete($id){
         global $conn;
         $sql="DELETE FROM Users WHERE user_id= '$id' ";
         return $conn->query($sql);
     }
+
+    public function update($id, $username, $password, $email, $phone, $role) {
+        global $conn;
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $sql = "UPDATE Users SET username='$username', password='$hash', email='$email', phone='$phone', role='$role' 
+                WHERE user_id='$id'";
+        return $conn->query($sql);
+    }
+    
     public function check($id){
         global $conn;
-        $sql="SELECT 1 From User WHERE user_id='$id'";
+        $sql="SELECT 1 From Users WHERE user_id='$id'";
         return $conn->query($sql);
+    }
 
+    public function checkUsername($username) {
+        global $conn;
+        $sql = "SELECT 1 FROM Users WHERE username='$username'";
+        return $conn->query($sql);
     }
 }
-
 ?>

@@ -37,6 +37,31 @@ switch($method){
             echo json_encode(["message"=>"Failed to delete ticket"]);
         }
         break;
-
+    case "GET":
+        $userid=$_GET['user_id'];
+        $list = [];
+            $result = $ticket -> getall($userid);
+            
+            if ($result && $result -> num_rows > 0) {
+                while ($row = $result -> fetch_assoc()) {
+                    $list[] = [
+                        "ticket_id" => $row['ticket_id'],
+                        "showtime_id" => $row['showtime_id'],
+                        "seat_id" => $row['seat_id'],
+                        "user_id" => $row['user_id'],
+                        "booking_time" => $row['booking_time']
+                    ] ;    
+                }
+                echo json_encode ([
+                    "status" => true,
+                    "data" => $list
+                ]);
+            }
+            else {
+                echo json_encode ([
+                    "status" => false,
+                    "message" => "Không tìm thấy vé nào!"
+                ]);
+            }
 }
 ?>
