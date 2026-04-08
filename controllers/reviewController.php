@@ -30,10 +30,15 @@
                 exit;
             }
 
-            if ($review->create($rating, $comment)) {
+            if ($review->create($data["movie_id"], $data["user_id"], $rating, $comment, date('Y-m-d H:i:s'))) {
                 echo json_encode([
                     "status" => true,
                     "message" => "Bình luận thành công!"
+                ]);
+            } else {
+                echo json_encode([
+                    "status" => false,
+                    "message" => "Bình luận thất bại!"
                 ]);
             }
 
@@ -60,10 +65,15 @@
                 exit;
             }
 
-            if ($review->update($rating, $comment)) {
+            if ($review->update($id, $rating, $comment)) {
                 echo json_encode([
                     "status" => true,
                     "message" => "Cập nhật bình luận thành công!"
+                ]);
+            } else {
+                echo json_encode([
+                    "status" => false,
+                    "message" => "Cập nhật bình luận thất bại!"
                 ]);
             }
 
@@ -77,30 +87,37 @@
                     "status" => true,
                     "message" => "Xóa bình luận thành công!"
                 ]);
+            } else {
+                echo json_encode([
+                    "status" => false,
+                    "message" => "Xóa bình luận thất bại!"
+                ]);
             }
 
             break;
 
         case "GET":
+            $id = $_GET['id'] ?? null;
             $list = [];
-            $result = $review -> getall();
+            $result = $review -> getall($id);
             
-            if ($result -> num_rows > 0) {
-                while ($row$row = $result -> fetch_assoc()) {
+            if ($result && $result -> num_rows > 0) {
+                while ($row = $result -> fetch_assoc()) {
                     $list[] = [
-                        $rating = $row['rating'],
-                        $comment = $row['comment']
-                    ]     
+                        "rating" => $row['rating'],
+                        "comment" => $row['comment'],
+                        "review_date" => $row['review_date']
+                    ] ;    
                 }
-                echo json_encode [(
+                echo json_encode ([
                     "status" => true,
-                    $list
-                )];
+                    "data" => $list
+                ]);
             }
             else {
                 echo json_encode ([
                     "status" => false,
-                    "message" => "Chưa có bình luận"
+                    "message" => "Chưa có bình luận nào!"
                 ]);
             }
     }

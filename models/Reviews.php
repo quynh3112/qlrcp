@@ -1,11 +1,11 @@
 <?php
     include "../config/db.php";
     class Reviews {
-        public function create($rating, $comment, $reviewdate) {
+        public function create($movieid, $userid, $rating, $comment, $reviewdate) {
             global $conn;
 
-            $sql = "INSERT INTO reviews (rating, comment)
-                    VALUES ('$rating', '$comment')";
+            $sql = "INSERT INTO reviews (movie_id, user_id, rating, comment, review_date)
+                    VALUES ('$movieid', '$userid', '$rating', '$comment', '$reviewdate')";
             
             return $conn->query($sql);
         }
@@ -18,18 +18,19 @@
             return $conn->query($sql);
         }
 
-        public function update($rating, $comment) {
+        public function update($id, $rating, $comment) {
             global $conn;
 
-            $sql = "UPDATE reviews SET rating = '$rating', comment = '$comment' WHERE review_id = '$id'";
+            $sql = "UPDATE reviews SET rating = '$rating', comment = '$comment' 
+                    WHERE review_id = '$id'";
             
             return $conn->query($sql);
         }
 
-        public function getall() {
+        public function getall($id) {
             global $conn;
 
-            $sql = "SELECT * FROM Reviews";
+            $sql = "SELECT * FROM Reviews WHERE movie_id = '$id'";
 
             return $conn->query($sql);
         }
