@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quản lý lịch chiếu</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+th { background: #f4f4f4; }
+input, select { padding: 6px; margin: 5px; }
+button { padding: 5px 10px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>🎬 Quản lý lịch chiếu</h1>
+<!-- FORM THÊM -->
+<h3>Thêm lịch chiếu</h3>
+<select id="movie"></select>
+<select id="theater"></select>
+<input type="date" id="date">
+<input type="time" id="time">
+<input type="number" id="price" placeholder="Giá vé">
+<button onclick="addShowtime()">Thêm</button>
+<hr>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Phim</th>
+<th>Rạp</th>
+<th>Ngày</th>
+<th>Giờ</th>
+<th>Giá</th>
+<th>Hành động</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+<div id="editModal" style="
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.5);
+">
+<div style="
+background:#fff;
+width:400px;
+margin:100px auto;
+padding:20px;
+border-radius:10px;
+">
+<h3> Sửa lịch chiếu</h3>
+<input type="hidden" id="edit_id">
+<select id="edit_movie"></select>
+<select id="edit_theater"></select>
+<input type="date" id="edit_date"><br>
+<input type="time" id="edit_time"><br>
+<input type="number" id="edit_price"><br><br>
+<button onclick="updateShowtime()">💾 Lưu</button>
+<button onclick="closeModal()">❌ Hủy</button>
+</div>
+</div>
+<script>
+const API_SHOW = "http://localhost:8080/qlrcp/controllers/showtimes.php";
+const API_MOVIE = "http://localhost:8080/qlrcp/controllers/movies.php";
+const API_THEATER = "http://localhost:8080/qlrcp/controllers/theaters.php";
+let showtimes = [];
+function loadMovies(){
+    fetch(API_MOVIE)
+    .then(res=>res.json())
+    .then(res=>{
+        let html = "<option value=''>-- Chọn phim --</option>";
+        res.data.forEach(m=>{
+            html += `<option value="${m.movie_id}">${m.title}</option>`;
+        });
+        document.getElementById("movie").innerHTML = html;
+        document.getElementById("edit_movie").innerHTML = html; 
+    });
+}
+function loadTheaters(){
+    fetch(API_THEATER)
+    .then(res=>res.json())
+    .then(res=>{
+        let html = "<option value=''>-- Chọn rạp --</option>";
+        res.data.forEach(t=>{
+            html += `<option value="${t.theater_id}">${t.theater_name}</option>`;
+        });
+        document.getElementById("theater").innerHTML = html;
+        document.getElementById("edit_theater").innerHTML = html; 
+    });
+}
+function loadShowtimes(){
+    fetch(API_SHOW)
+    .then(res=>res.json())
+    .then(res=>{
+        showtimes = res.data || [];
+        render(showtimes);
+    });
+}
+function render(data){
+    let html = "";
+    data.forEach(s=>{
+        html += `
+        <tr>
+            <td>${s.showtime_id}</td>
+            <td>${s.title}</td>
+            <td>${s.theater_name}</td>
+            <td>${s.show_date}</td>
+            <td>${s.start_time}</td>
+            <td>${s.price}</td>
+            <td>
+                <button onclick='edit("${encodeURIComponent(JSON.stringify(s))}")'>Sửa</button>
+                <button onclick='del(${s.showtime_id})'>Xóa</button>
+            </td>
+        </tr>
+        `;
+    });
+    document.getElementById("table").innerHTML = html;
+}
+function addShowtime(){
+    const data = {
+        movie_id: document.getElementById("movie").value,
+        theater_id: document.getElementById("theater").value,
+        show_date: document.getElementById("date").value,
+        start_time: document.getElementById("time").value,
+        price: document.getElementById("price").value
+    };
+    if(!data.movie_id || !data.theater_id){
+        alert("Chọn phim và rạp!");
+        return;
+    }
+    fetch(API_SHOW,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        alert(res.message);
+        resetForm();
+        loadShowtimes();
+    });
+}
+function edit(data){
+    const s = JSON.parse(decodeURIComponent(data));
+    document.getElementById("edit_id").value = s.showtime_id;
+    document.getElementById("edit_movie").value = s.movie_id;
+    document.getElementById("edit_theater").value = s.theater_id;
+    document.getElementById("edit_date").value = s.show_date;
+    document.getElementById("edit_time").value = s.start_time;
+    document.getElementById("edit_price").value = s.price;
+    document.getElementById("editModal").style.display = "block";
+}
+function updateShowtime(){
+    const data = {
+        showtime_id: document.getElementById("edit_id").value,
+        movie_id: document.getElementById("edit_movie").value,
+        theater_id: document.getElementById("edit_theater").value,
+        show_date: document.getElementById("edit_date").value,
+        start_time: document.getElementById("edit_time").value,
+        price: document.getElementById("edit_price").value
+    };
+    fetch(API_SHOW,{
+        method:"PUT",
+        headers:{ "Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        alert(res.message);
+        closeModal();
+        loadShowtimes();
+    });
+}
+function del(id){
+    if(!confirm("Xóa lịch chiếu?")) return;
+    fetch(API_SHOW,{
+        method:"DELETE",
+        headers:{ "Content-Type":"application/json"},
+        body: JSON.stringify({showtime_id:id})
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        alert(res.message);
+        loadShowtimes();
+    });
+}
+function resetForm(){
+    document.getElementById("movie").value = "";
+    document.getElementById("theater").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("time").value = "";
+    document.getElementById("price").value = "";
+}
+function closeModal(){
+    document.getElementById("editModal").style.display = "none";
+}
+loadMovies();
+loadTheaters();
+loadShowtimes();
+</script>
+</body>
+</html>
